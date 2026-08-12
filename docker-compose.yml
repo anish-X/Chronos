@@ -1,0 +1,57 @@
+# docker-compos:
+# 'services' is the top level key - every container is a service
+services:
+  # service-1 -- POSTGRES --
+  postgres: 
+    image: postgres:16-alpine
+
+    # Environment variables passed into container.
+    # The official postgres images reads these on the first startup
+    # to create the initial database and user
+    environment:
+      POSTGRES_DB: chronos # creates a database called 'chronos'
+      POSTGRES_USER: chronos # creates a user called 'chronos'
+      POSTGRES_PASSWORD: chronos_dev # sets the password
+
+    # Port mapping: HOST_PORT:CONTAINER_PORT
+    # Postgres inside the container listens on 5432 (it's default)
+    # This map it to the port of the machine (localhost)
+    # codes connect to localhost:5432 and docker routes it to container port
+    ports:
+      - "5432:5432"
+
+    # Volumes: persistent storage
+    volumes:
+      - pg_data:/var/lib/postgresql/data # data will still remains after the container restarts
+
+      # Bind mounts - your lcoal migrations folder is mapped into 
+      # the container's init directory. Postgres auto-runs any 
+      # .sql files here on first startup only 
+      - ./src/db/migrations:/docker-entrypoint-initdb.d
+
+    # Health-check docker will check if postgres is actually ready 
+    # not just started but accepting connections
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chronos -d chronos"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ---Services 2: Redis ---
+  redis:
+    image: redis:7-alpine
+
+    ports:
+      - "6379:6379"
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  #Declare named volumes at the top level
+  # Docker manages where pg_data actually lives on the disk 
+  # no need to know the physical path
+volumes:
+    pg_data:
