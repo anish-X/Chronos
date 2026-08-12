@@ -65,7 +65,7 @@ CREATE TABLE job_runs(
                     CHECK(triggered_by IN ('schedule', 'api', 'dependencies')),
 
   status            VARCHAR(20) NOT NULL DEFAULT 'PENDING'
-                    CHECK(status IN ('PENDGIN', 'QUEUED', 'RUNNING', 'SUCCEEDED', 'FAILED', 'RETRYING', 'DEAD')),
+                    CHECK(status IN ('PENDING', 'QUEUED', 'RUNNING', 'SUCCEEDED', 'FAILED', 'RETRYING', 'DEAD')),
   -- the actual config/payload for the run
   -- computed at the creation time by merging 
   -- job_definition.default_config and schedule.payload_override
