@@ -1,12 +1,12 @@
 import { Pool } from 'pg';
-import { config } from '../config';
+import { env } from '../config/env.js';
 
 //Pool manages multiple open connection to the database
 //when there is some query to the db, it grabs an open/available connection
 //runs the query and retruns the connection back to the pool,
 //no need to close or open the connection manually 
 export const pool = new Pool({
-  connectionString: config.database.url,
+  connectionString: env.database.url,
   max: 10,
   idleTimeoutMillis: 30_000,
 })

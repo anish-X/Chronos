@@ -1,9 +1,10 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import { getJob, createJob, getJobById } from '../controllers/jobs.controller.js'
 
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello from job' })
-})
+router.get('/', getJob);
+router.get('/:id', getJobById);
+router.post('/', createJob);
 
 export default router;

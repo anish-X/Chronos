@@ -7,7 +7,7 @@ export function createApp(): Express {
 
   app.use(express.json());
 
-  app.use("/jobs", jobRouter);
+  app.use("/api/jobs", jobRouter);
 
   return app;
 }
